@@ -14,11 +14,14 @@ import pytest  # noqa: E402
 from parse import (  # noqa: E402
     _eval_expr,
     _normalize_expr,
+    _parse_csv_grid,
     _parse_line,
     _parse_numbered_line,
     _parse_numbered_uuid_line,
+    score_csv_permutation,
     score_response,
     score_response_numbered,
+    score_unnumbered_uuid_sort,
     score_uuid_sort,
 )
 
@@ -352,6 +355,184 @@ class TestScoreUuidSort:
             (False, False, False),
             (False, False, False),
         ]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# score_unnumbered_uuid_sort
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestScoreUnnumberedUuidSort:
+    """score_unnumbered_uuid_sort: positional line matching, same per-line signals."""
+
+    def test_all_correct(self):
+        out = "\n".join([
+            ",".join(EXPECTED_LINE_1),
+            ",".join(EXPECTED_LINE_2),
+        ])
+        assert score_unnumbered_uuid_sort(out, UUID_LINES) == [
+            (True, True, True),
+            (True, True, True),
+        ]
+
+    def test_input_order_right_uuids_wrong_sort(self):
+        out = "\n".join([
+            ",".join(UUID_LINES[0]),  # [B, A, C] — set OK, not sorted
+            ",".join(EXPECTED_LINE_2),
+        ])
+        scores = score_unnumbered_uuid_sort(out, UUID_LINES)
+        assert scores[0] == (True, False, False)
+        assert scores[1] == (True, True, True)
+
+    def test_missing_line_all_false(self):
+        out = ",".join(EXPECTED_LINE_1)
+        scores = score_unnumbered_uuid_sort(out, UUID_LINES)
+        assert scores[0] == (True, True, True)
+        assert scores[1] == (False, False, False)
+
+    def test_garbage_lines_skipped(self):
+        # Non-UUID lines are skipped; remaining lines align positionally.
+        out = "\n".join([
+            "some preamble text",
+            ",".join(EXPECTED_LINE_1),
+            ",".join(EXPECTED_LINE_2),
+        ])
+        assert score_unnumbered_uuid_sort(out, UUID_LINES) == [
+            (True, True, True),
+            (True, True, True),
+        ]
+
+    def test_empty_output(self):
+        assert score_unnumbered_uuid_sort("", UUID_LINES) == [
+            (False, False, False),
+            (False, False, False),
+        ]
+
+    def test_numbered_prefix_still_parsed(self):
+        # If model outputs [N] prefix anyway, the 8-char hex tokens are still extracted.
+        out = "\n".join([
+            f"[1]{','.join(EXPECTED_LINE_1)}",
+            f"[2]{','.join(EXPECTED_LINE_2)}",
+        ])
+        assert score_unnumbered_uuid_sort(out, UUID_LINES) == [
+            (True, True, True),
+            (True, True, True),
+        ]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# _parse_csv_grid and score_csv_permutation
+# ─────────────────────────────────────────────────────────────────────────────
+
+# 2×3 grid with distinct cells.
+CSV_GRID = [
+    ["aa", "bb", "cc"],
+    ["dd", "ee", "ff"],
+]
+# Identity permutation expected output.
+CSV_EXPECTED_IDENTITY = (
+    ",[C0],[C1],[C2]\n"
+    "[R0],aa,bb,cc\n"
+    "[R1],dd,ee,ff"
+)
+# Row-swap (R1 first) + col-swap (C2, C0, C1).
+CSV_EXPECTED_PERMUTED = (
+    ",[C2],[C0],[C1]\n"
+    "[R1],ff,dd,ee\n"
+    "[R0],cc,aa,bb"
+)
+
+
+class TestParseCsvGrid:
+    def test_identity(self):
+        grid = _parse_csv_grid(CSV_EXPECTED_IDENTITY, 2, 3)
+        assert grid == [["aa", "bb", "cc"], ["dd", "ee", "ff"]]
+
+    def test_permuted(self):
+        grid = _parse_csv_grid(CSV_EXPECTED_PERMUTED, 2, 3)
+        assert grid == [["ff", "dd", "ee"], ["cc", "aa", "bb"]]
+
+    def test_no_header_row(self):
+        # If the first line doesn't start with ',', it's treated as a data row.
+        text = "[R0],aa,bb,cc\n[R1],dd,ee,ff"
+        grid = _parse_csv_grid(text, 2, 3)
+        assert grid == [["aa", "bb", "cc"], ["dd", "ee", "ff"]]
+
+    def test_too_few_rows_padded(self):
+        grid = _parse_csv_grid(CSV_EXPECTED_IDENTITY, 3, 3)
+        assert len(grid) == 3
+        assert grid[2] == ["", "", ""]
+
+    def test_too_few_cols_padded(self):
+        grid = _parse_csv_grid(CSV_EXPECTED_IDENTITY, 2, 4)
+        assert grid[0] == ["aa", "bb", "cc", ""]
+
+    def test_empty_input(self):
+        grid = _parse_csv_grid("", 2, 3)
+        assert grid == [["", "", ""], ["", "", ""]]
+
+
+class TestScoreCsvPermutation:
+    def test_perfect_match(self):
+        cell_scores, row_scores, col_scores = score_csv_permutation(
+            CSV_EXPECTED_PERMUTED, CSV_EXPECTED_PERMUTED, 2, 3
+        )
+        assert all(s[1] for s in cell_scores)
+        assert all(row_scores)
+        assert all(col_scores)
+
+    def test_total_mismatch(self):
+        wrong = ",[C0],[C1],[C2]\n[R0],xx,yy,zz\n[R1],pp,qq,rr"
+        cell_scores, row_scores, col_scores = score_csv_permutation(
+            wrong, CSV_EXPECTED_PERMUTED, 2, 3
+        )
+        assert not any(s[1] for s in cell_scores)
+        assert not any(row_scores)
+        assert not any(col_scores)
+
+    def test_partial_row_correct(self):
+        # First row correct, second row wrong.
+        partial = (
+            ",[C2],[C0],[C1]\n"
+            "[R1],ff,dd,ee\n"
+            "[R0],XX,aa,bb"  # first cell wrong
+        )
+        cell_scores, row_scores, col_scores = score_csv_permutation(
+            partial, CSV_EXPECTED_PERMUTED, 2, 3
+        )
+        assert row_scores[0] is True
+        assert row_scores[1] is False
+        # col 0: cells (ff, XX) — second wrong → col False
+        assert col_scores[0] is False
+        # col 1: cells (dd, aa) — both correct → col True
+        assert col_scores[1] is True
+
+    def test_reward_is_cell_accuracy(self):
+        # 5 of 6 cells correct → reward = 5/6.
+        partial = (
+            ",[C2],[C0],[C1]\n"
+            "[R1],ff,dd,ee\n"
+            "[R0],XX,aa,bb"
+        )
+        cell_scores, _, _ = score_csv_permutation(partial, CSV_EXPECTED_PERMUTED, 2, 3)
+        flat = [s[1] for s in cell_scores]
+        assert sum(flat) == 5
+        assert len(flat) == 6
+
+    def test_empty_model_output(self):
+        cell_scores, row_scores, col_scores = score_csv_permutation(
+            "", CSV_EXPECTED_PERMUTED, 2, 3
+        )
+        assert not any(s[1] for s in cell_scores)
+        assert not any(row_scores)
+        assert not any(col_scores)
+
+    def test_n_items_equals_n_rows_times_n_cols(self):
+        cell_scores, row_scores, col_scores = score_csv_permutation(
+            CSV_EXPECTED_PERMUTED, CSV_EXPECTED_PERMUTED, 2, 3
+        )
+        assert len(cell_scores) == 2 * 3
+        assert len(row_scores) == 2
+        assert len(col_scores) == 3
 
 
 if __name__ == "__main__":

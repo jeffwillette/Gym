@@ -272,6 +272,105 @@ def score_uuid_sort(
     return scores
 
 
+def score_unnumbered_uuid_sort(
+    model_output: str,
+    uuid_lines: list[list[str]],
+) -> list[tuple[bool, bool, bool]]:
+    """Score the unnumbered per-line UUID-sort task (positional matching).
+
+    Lines in the model output are matched positionally to expected lines.
+    Non-empty lines with no 8-char hex tokens are skipped so that stray
+    punctuation or prose doesn't shift alignment.
+
+    Returns one (copy_correct, answer_correct, self_consistent) per expected
+    line — same semantics as score_uuid_sort.
+    """
+    expected_per_line = [sorted(u.lower() for u in uuids) for uuids in uuid_lines]
+    input_sets = [set(u.lower() for u in uuids) for uuids in uuid_lines]
+
+    parsed_lines: list[list[str]] = []
+    for line in model_output.split("\n"):
+        if not line.strip():
+            continue
+        uuids = [u.lower() for u in _UUID_RE.findall(line)]
+        if uuids:
+            parsed_lines.append(uuids)
+
+    scores: list[tuple[bool, bool, bool]] = []
+    for i, expected_sorted in enumerate(expected_per_line):
+        if i >= len(parsed_lines):
+            scores.append((False, False, False))
+            continue
+        model_uuids = parsed_lines[i]
+        copy_correct = set(model_uuids) == input_sets[i]
+        answer_correct = len(model_uuids) == len(expected_sorted) and all(
+            model_uuids[j] == expected_sorted[j] for j in range(len(expected_sorted))
+        )
+        self_consistent = all(
+            model_uuids[j] <= model_uuids[j + 1] for j in range(len(model_uuids) - 1)
+        )
+        scores.append((copy_correct, answer_correct, self_consistent))
+    return scores
+
+
+def _parse_csv_grid(text: str, n_rows: int, n_cols: int) -> list[list[str]]:
+    """Parse a CSV with optional row/col headers into an n_rows × n_cols cell grid.
+
+    The first line is treated as a header and skipped when it starts with ','.
+    Each data line's first comma-separated token is the row label and is skipped.
+    Missing cells are padded with empty strings.
+    """
+    lines = [l for l in text.split("\n") if l.strip()]
+    start = 1 if (lines and lines[0].startswith(",")) else 0
+    grid: list[list[str]] = []
+    for line in lines[start: start + n_rows]:
+        parts = line.split(",")
+        cells = [c.strip() for c in parts[1: n_cols + 1]]
+        while len(cells) < n_cols:
+            cells.append("")
+        grid.append(cells)
+    while len(grid) < n_rows:
+        grid.append([""] * n_cols)
+    return grid
+
+
+def score_csv_permutation(
+    model_output: str,
+    expected_output: str,
+    n_rows: int,
+    n_cols: int,
+) -> tuple[list[list[bool]], list[bool], list[bool]]:
+    """Score the CSV permutation task against the expected permuted CSV.
+
+    Args:
+        model_output:    raw model text.
+        expected_output: the correct permuted CSV string (stored in the dataset row).
+        n_rows, n_cols:  grid dimensions.
+
+    Returns:
+        cell_item_scores: n_rows*n_cols items, each [cell_correct, cell_correct, cell_correct].
+            Index 1 is used as the reward signal, so cell accuracy drives the reward.
+        row_scores:  n_rows bools — True when every cell in that row matches.
+        col_scores:  n_cols bools — True when every cell in that column matches.
+    """
+    model_grid = _parse_csv_grid(model_output, n_rows, n_cols)
+    expected_grid = _parse_csv_grid(expected_output, n_rows, n_cols)
+
+    correct = [
+        [model_grid[i][j] == expected_grid[i][j] for j in range(n_cols)]
+        for i in range(n_rows)
+    ]
+
+    cell_item_scores = [
+        [correct[i][j], correct[i][j], correct[i][j]]
+        for i in range(n_rows)
+        for j in range(n_cols)
+    ]
+    row_scores = [all(correct[i][j] for j in range(n_cols)) for i in range(n_rows)]
+    col_scores = [all(correct[i][j] for i in range(n_rows)) for j in range(n_cols)]
+    return cell_item_scores, row_scores, col_scores
+
+
 def _load_sample(dataset_path: Path, index: int) -> dict:
     with open(dataset_path) as f:
         for i, line in enumerate(f):
