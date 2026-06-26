@@ -14,6 +14,6 @@ long_transduction_agent:
       - name: long_transduction
         type: benchmark
         jsonl_fpath: benchmarks/long_transduction/data/long_transduction.jsonl
-        prompt_config: benchmarks/long_transduction/prompts/default.yaml
+        prompt_config: benchmarks/prompts/generic/default.yaml
         prepare_script: benchmarks/long_transduction/prepare.py
         license: Apache 2.0

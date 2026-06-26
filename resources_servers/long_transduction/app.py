@@ -45,8 +45,10 @@ from nemo_gym.base_resources_server import (
 
 sys.path.insert(0, str(Path(__file__).parent))
 from parse import (  # noqa: E402
+    score_csv_permutation,
     score_response,
     score_response_numbered,
+    score_unnumbered_uuid_sort,
     score_uuid_sort,
 )
 
@@ -63,8 +65,13 @@ def _score_sum(generation: str, body) -> list[list[bool]]:
 
 
 def _score_uuid(generation: str, body) -> list[list[bool]]:
-    """Adapter: per-line (copy_correct, answer_correct, self_consistent) for UUID-sort."""
+    """Adapter: per-line (copy_correct, answer_correct, self_consistent) for numbered UUID-sort."""
     return [list(t) for t in score_uuid_sort(generation, body.uuid_lines or [])]
+
+
+def _score_unnumbered_uuid(generation: str, body) -> list[list[bool]]:
+    """Adapter: positional (copy_correct, answer_correct, self_consistent) for unnumbered UUID-sort."""
+    return [list(t) for t in score_unnumbered_uuid_sort(generation, body.uuid_lines or [])]
 
 
 def _generation(body) -> str:
@@ -85,6 +92,7 @@ _SCORERS_BY_TYPE = {
     "unnumbered_streaming_sum":     _score_sum,
     "streaming_sum":                _score_sum,
     "shuffled_streaming_sum":       _score_sum,
+    "unnumbered_uuid_sort":         _score_unnumbered_uuid,
     "streaming_uuid_sort":          _score_uuid,
     "shuffled_streaming_uuid_sort": _score_uuid,
 }
@@ -126,6 +134,11 @@ class LongTransductionRunRequest(BaseRunRequest):
     uuid_lines: Optional[List[List[str]]] = None
     uuids_per_line: Optional[int] = None
     n_lines: Optional[int] = None
+    # CSV permutation payload.
+    expected_output: Optional[str] = None
+    n_rows: Optional[int] = None
+    n_cols: Optional[int] = None
+    perm_fraction: Optional[float] = None
 
 
 class LongTransductionVerifyRequest(LongTransductionRunRequest, BaseVerifyRequest):
@@ -135,13 +148,19 @@ class LongTransductionVerifyRequest(LongTransductionRunRequest, BaseVerifyReques
 class LongTransductionVerifyResponse(LongTransductionVerifyRequest, BaseVerifyResponse):
     # Mean per-item correctness (used as the reward). For sum types this is
     # mean(answer_correct); for uuid_sort it's mean(position_correct) flattened
-    # across all lines.
+    # across all lines; for csv_permutation it's cell accuracy.
     answer_correct: float
     n_items_scored: int
     # Per-item [copy_correct, answer_correct, self_consistent]. The three
     # signals are defined slightly differently per task type — see the scorer
     # docstrings — but the shape and reward semantics (index 1) are uniform.
     item_scores: List[List[bool]]
+    # Count of items where copy_correct (index 0) is True.
+    n_items_copy_correct: int
+    # CSV-permutation diagnostics (None for non-CSV types).
+    cell_accuracy: Optional[float] = None
+    row_accuracy: Optional[float] = None
+    col_accuracy: Optional[float] = None
 
 
 class LongTransductionServer(SimpleResourcesServer):
@@ -151,27 +170,44 @@ class LongTransductionServer(SimpleResourcesServer):
         self, body: LongTransductionVerifyRequest
     ) -> LongTransductionVerifyResponse:
         sample_type = body.type or _DEFAULT_TYPE
+
+        generation = _generation(body)
+        if self.config.strip_reasoning:
+            generation = _strip_reasoning(generation)
+
+        if sample_type == "csv_permutation":
+            cell_item_scores, row_scores, col_scores = score_csv_permutation(
+                generation,
+                body.expected_output or "",
+                body.n_rows or 0,
+                body.n_cols or 0,
+            )
+            n_items = len(cell_item_scores)
+            flat = [row[1] for row in cell_item_scores]
+            reward = sum(flat) / n_items if n_items else 0.0
+            return LongTransductionVerifyResponse(
+                **body.model_dump(),
+                reward=reward,
+                answer_correct=reward,
+                n_items_scored=n_items,
+                n_items_copy_correct=sum(row[0] for row in cell_item_scores),
+                item_scores=cell_item_scores,
+                cell_accuracy=reward,
+                row_accuracy=sum(row_scores) / len(row_scores) if row_scores else 0.0,
+                col_accuracy=sum(col_scores) / len(col_scores) if col_scores else 0.0,
+            )
+
         try:
             scorer = _SCORERS_BY_TYPE[sample_type]
         except KeyError as e:
             raise ValueError(
                 f"Unsupported long_transduction sample type: {sample_type!r}. "
-                f"Supported types: {sorted(_SCORERS_BY_TYPE)}."
+                f"Supported types: {sorted(_SCORERS_BY_TYPE) + ['csv_permutation']}."
             ) from e
-
-        # Extract the model's generated text locally and (if configured) strip
-        # any reasoning preamble for scoring. The saved response body is left
-        # untouched so debugging tools can see the raw model output.
-        generation = _generation(body)
-        if self.config.strip_reasoning:
-            generation = _strip_reasoning(generation)
 
         item_scores = scorer(generation, body)
 
         # Reward is the mean "answer_correct" signal (index 1) across items.
-        # Both sum and uuid_sort scorers emit per-item 3-tuples of
-        # (copy_correct, answer_correct, self_consistent), so a single rule
-        # extracts the reward signal cleanly.
         flat = [row[1] for row in item_scores] if item_scores else []
         n_items = len(flat)
         reward = (sum(flat) / n_items) if n_items else 0.0
@@ -181,6 +217,7 @@ class LongTransductionServer(SimpleResourcesServer):
             reward=reward,
             answer_correct=reward,
             n_items_scored=n_items,
+            n_items_copy_correct=sum(row[0] for row in item_scores),
             item_scores=item_scores,
         )
 
@@ -197,6 +234,8 @@ class LongTransductionServer(SimpleResourcesServer):
                 diff = rollout.get("max_operands")
                 if diff is None:
                     diff = rollout.get("uuids_per_line")
+                if diff is None:
+                    diff = rollout.get("perm_fraction")
                 if diff is None:
                     diff = "n/a"
                 acc = rollout["answer_correct"]
