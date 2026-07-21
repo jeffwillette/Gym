@@ -16,6 +16,21 @@ Supported sample types (dispatched on the row's `type` field):
     - "shuffled_streaming_uuid_sort" : same as above but input lines are
                                        shuffled; model must still emit in
                                        ascending [N] order.
+    - "unnumbered_uuid_sort"         : no index prefix; positional matching.
+
+  Variable expansion (dereference hex-named vars to words):
+    - "streaming_var_expand"          : "[N]aaa+bbb" lines in order; model
+                                        emits "[N]<word> <word>" resolving each
+                                        key against the shuffled var pool.
+    - "shuffled_streaming_var_expand" : same but input lines are shuffled;
+                                        model must still emit ascending [N].
+    - "unnumbered_var_expand"         : no index prefix; positional matching.
+
+  CSV tasks (scored by cell-level accuracy via score_csv_permutation):
+    - "csv_permutation_homogeneous"   : permute rows/cols of 4-digit integer grid.
+    - "csv_permutation_heterogeneous" : permute rows/cols of variable-length UUID grid.
+    - "csv_kv_lookup"                 : resolve adjective+noun key expressions
+                                        in each cell using provided lookup tables.
 
 verify() looks up the scorer in _SCORERS_BY_TYPE (raises on unknown). Rows
 without a `type` are treated as the default ("unnumbered_streaming_sum") so
@@ -23,8 +38,8 @@ pre-typed rollouts continue to score.
 
 compute_metrics() reports per-difficulty, per-type, and per-(type, difficulty)
 accuracy. Difficulty for sum types = max_operands; for uuid_sort types =
-uuids_per_line (stored as `max_operands` on the row for now, falling back to
-None if absent).
+uuids_per_line; for csv_permutation types = perm_fraction; for csv_kv_lookup =
+vocab_fraction; for var_expand types = n_variables.
 """
 from __future__ import annotations
 
@@ -50,6 +65,8 @@ from parse import (  # noqa: E402
     score_response_numbered,
     score_unnumbered_uuid_sort,
     score_uuid_sort,
+    score_var_expand_numbered,
+    score_var_expand_unnumbered,
 )
 
 
@@ -74,6 +91,19 @@ def _score_unnumbered_uuid(generation: str, body) -> list[list[bool]]:
     return [list(t) for t in score_unnumbered_uuid_sort(generation, body.uuid_lines or [])]
 
 
+def _score_var_expand(generation: str, body) -> list[list[bool]]:
+    """Adapter: pick the numbered vs positional variable-expansion scorer.
+
+    Returns each item's [copy_correct, answer_correct, self_consistent] (the
+    three are identical for this value-only task).
+    """
+    if body.type == "unnumbered_var_expand":
+        triples = score_var_expand_unnumbered(generation, body.expressions or [])
+    else:
+        triples = score_var_expand_numbered(generation, body.expressions or [])
+    return [list(t) for t in triples]
+
+
 def _generation(body) -> str:
     """Extract the model's generated text from a verify request body."""
     parts = [
@@ -95,9 +125,19 @@ _SCORERS_BY_TYPE = {
     "unnumbered_uuid_sort":         _score_unnumbered_uuid,
     "streaming_uuid_sort":          _score_uuid,
     "shuffled_streaming_uuid_sort": _score_uuid,
+    "unnumbered_var_expand":        _score_var_expand,
+    "streaming_var_expand":         _score_var_expand,
+    "shuffled_streaming_var_expand": _score_var_expand,
 }
 # Rows with no `type` set keep scoring against the legacy unnumbered parser.
 _DEFAULT_TYPE = "unnumbered_streaming_sum"
+
+# CSV types all use score_csv_permutation (cell-level string equality).
+_CSV_TYPES = {
+    "csv_permutation_homogeneous",
+    "csv_permutation_heterogeneous",
+    "csv_kv_lookup",
+}
 
 
 def _strip_reasoning(text: str) -> str:
@@ -139,6 +179,12 @@ class LongTransductionRunRequest(BaseRunRequest):
     n_rows: Optional[int] = None
     n_cols: Optional[int] = None
     perm_fraction: Optional[float] = None
+    # CSV KV lookup payload.
+    vocab_fraction: Optional[float] = None
+    n_vocab: Optional[int] = None
+    # Variable-expansion payload (var_expand types). Reuses `expressions`
+    # ({"expr": "aaa+bbb", "answer": "big dog"}); n_variables is the difficulty.
+    n_variables: Optional[int] = None
 
 
 class LongTransductionVerifyRequest(LongTransductionRunRequest, BaseVerifyRequest):
@@ -175,7 +221,7 @@ class LongTransductionServer(SimpleResourcesServer):
         if self.config.strip_reasoning:
             generation = _strip_reasoning(generation)
 
-        if sample_type == "csv_permutation":
+        if sample_type in _CSV_TYPES:
             cell_item_scores, row_scores, col_scores = score_csv_permutation(
                 generation,
                 body.expected_output or "",
@@ -202,7 +248,7 @@ class LongTransductionServer(SimpleResourcesServer):
         except KeyError as e:
             raise ValueError(
                 f"Unsupported long_transduction sample type: {sample_type!r}. "
-                f"Supported types: {sorted(_SCORERS_BY_TYPE) + ['csv_permutation']}."
+                f"Supported types: {sorted(_SCORERS_BY_TYPE) + sorted(_CSV_TYPES)}."
             ) from e
 
         item_scores = scorer(generation, body)
@@ -236,6 +282,10 @@ class LongTransductionServer(SimpleResourcesServer):
                     diff = rollout.get("uuids_per_line")
                 if diff is None:
                     diff = rollout.get("perm_fraction")
+                if diff is None:
+                    diff = rollout.get("vocab_fraction")
+                if diff is None:
+                    diff = rollout.get("n_variables")
                 if diff is None:
                     diff = "n/a"
                 acc = rollout["answer_correct"]

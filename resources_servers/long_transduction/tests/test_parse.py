@@ -14,15 +14,19 @@ import pytest  # noqa: E402
 from parse import (  # noqa: E402
     _eval_expr,
     _normalize_expr,
+    _normalize_value,
     _parse_csv_grid,
     _parse_line,
     _parse_numbered_line,
     _parse_numbered_uuid_line,
+    _parse_numbered_value_line,
     score_csv_permutation,
     score_response,
     score_response_numbered,
     score_unnumbered_uuid_sort,
     score_uuid_sort,
+    score_var_expand_numbered,
+    score_var_expand_unnumbered,
 )
 
 
@@ -533,6 +537,106 @@ class TestScoreCsvPermutation:
         assert len(cell_scores) == 2 * 3
         assert len(row_scores) == 2
         assert len(col_scores) == 3
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Variable expansion (var_expand types)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Canonical (1-indexed by position) expected items for var-expand tests.
+VAR_EXPRS = [
+    {"expr": "a3f+7b2", "answer": "big dog"},
+    {"expr": "0c1+9e4", "answer": "black cat"},
+    {"expr": "1a2+3b4", "answer": "red fox"},
+]
+
+
+class TestNormalizeValue:
+    def test_collapses_whitespace_and_lowercases(self):
+        assert _normalize_value("Big   Dog") == "big dog"
+        assert _normalize_value("  black\tcat ") == "black cat"
+
+    def test_already_normalized(self):
+        assert _normalize_value("red fox") == "red fox"
+
+
+class TestParseNumberedValueLine:
+    def test_basic(self):
+        assert _parse_numbered_value_line("[1]big dog") == (1, "big dog")
+
+    def test_multidigit_index_and_whitespace(self):
+        assert _parse_numbered_value_line("[42] black cat ") == (42, "black cat")
+
+    def test_no_bracket(self):
+        assert _parse_numbered_value_line("big dog") == (None, None)
+
+    def test_empty_value(self):
+        assert _parse_numbered_value_line("[3]") == (3, "")
+
+
+class TestScoreVarExpandNumbered:
+    def test_all_correct(self):
+        out = "[1]big dog\n[2]black cat\n[3]red fox"
+        assert score_var_expand_numbered(out, VAR_EXPRS) == [(True, True, True)] * 3
+
+    def test_out_of_order_matches_by_number(self):
+        out = "[3]red fox\n[1]big dog\n[2]black cat"
+        assert score_var_expand_numbered(out, VAR_EXPRS) == [(True, True, True)] * 3
+
+    def test_missing_number_marks_only_that_index(self):
+        out = "[1]big dog\n[3]red fox"  # [2] absent
+        scores = score_var_expand_numbered(out, VAR_EXPRS)
+        assert scores == [
+            (True, True, True),
+            (False, False, False),
+            (True, True, True),
+        ]
+
+    def test_wrong_value_scores_false(self):
+        out = "[1]big dog\n[2]white cat\n[3]red fox"
+        scores = score_var_expand_numbered(out, VAR_EXPRS)
+        assert scores[1] == (False, False, False)
+
+    def test_whitespace_and_case_tolerated(self):
+        out = "[1]Big   Dog\n[2]BLACK cat\n[3]red  fox"
+        assert score_var_expand_numbered(out, VAR_EXPRS) == [(True, True, True)] * 3
+
+    def test_duplicate_number_first_wins(self):
+        out = "[1]big dog\n[1]wrong words\n[2]black cat\n[3]red fox"
+        scores = score_var_expand_numbered(out, VAR_EXPRS)
+        assert scores[0] == (True, True, True)
+
+    def test_empty_output(self):
+        assert score_var_expand_numbered("", VAR_EXPRS) == [(False, False, False)] * 3
+
+
+class TestScoreVarExpandUnnumbered:
+    def test_all_correct(self):
+        out = "big dog\nblack cat\nred fox"
+        assert score_var_expand_unnumbered(out, VAR_EXPRS) == [(True, True, True)] * 3
+
+    def test_positional_matching(self):
+        out = "big dog\nred fox\nblack cat"  # order 2 and 3 swapped -> both wrong
+        scores = score_var_expand_unnumbered(out, VAR_EXPRS)
+        assert scores[0] == (True, True, True)
+        assert scores[1] == (False, False, False)
+        assert scores[2] == (False, False, False)
+
+    def test_missing_last_line(self):
+        out = "big dog\nblack cat"
+        scores = score_var_expand_unnumbered(out, VAR_EXPRS)
+        assert scores == [
+            (True, True, True),
+            (True, True, True),
+            (False, False, False),
+        ]
+
+    def test_blank_lines_skipped(self):
+        out = "big dog\n\nblack cat\n\nred fox"
+        assert score_var_expand_unnumbered(out, VAR_EXPRS) == [(True, True, True)] * 3
+
+    def test_empty_output(self):
+        assert score_var_expand_unnumbered("", VAR_EXPRS) == [(False, False, False)] * 3
 
 
 if __name__ == "__main__":

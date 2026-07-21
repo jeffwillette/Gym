@@ -1,8 +1,10 @@
+--extra-index-url https://download.pytorch.org/whl/cu126
 -e nemo-gym[dev] @ ../../
 # SEGALE: forked from bc19b2b with numpy==1.23.5 → >=1.23.5 to resolve
 # the pandas==2.2.3 conflict (pandas requires numpy>=1.26.0) and also vecalign 2.0.0
 segale @ git+https://github.com/jeffwillette/SEGALE.git@ab5e0d722e03f1b97846b7ed057ab7558218b035
-# Bumped torch 2.5.0 → 2.12.0 on Sun Jun 22, 2026 for CVE remediation.
+# torch 2.12.0 defaults to CUDA 13 wheels on PyPI; cluster nodes only support
+# CUDA 12.x drivers. The --extra-index-url above resolves 2.12.0+cu126 instead.
 # torchmetrics imports pkg_resources which setuptools 81 removed; pin <81.
 setuptools>=70,<81
 torch==2.12.0
