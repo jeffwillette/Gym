@@ -7,6 +7,9 @@ Supports five sample types — see `_SCORERS_BY_TYPE` in app.py for dispatch:
   - shuffled_streaming_sum      : score_response_numbered
   - streaming_uuid_sort         : score_uuid_sort
   - shuffled_streaming_uuid_sort: score_uuid_sort
+  - unnumbered_var_expand       : score_var_expand_unnumbered
+  - streaming_var_expand        : score_var_expand_numbered
+  - shuffled_streaming_var_expand: score_var_expand_numbered
 
 Usage (as a library):
     from parse import score_response, score_uuid_sort
@@ -310,6 +313,95 @@ def score_unnumbered_uuid_sort(
             model_uuids[j] <= model_uuids[j + 1] for j in range(len(model_uuids) - 1)
         )
         scores.append((copy_correct, answer_correct, self_consistent))
+    return scores
+
+
+def _normalize_value(s: str) -> str:
+    """Collapse internal whitespace to single spaces, strip edges, lowercase.
+
+    'Big   Dog' and 'big dog' both become 'big dog'. Used to compare a
+    resolved 'adjective noun' value against the expected string so trivial
+    spacing/casing differences don't count as errors.
+    """
+    return " ".join(s.split()).lower()
+
+
+_NUMBERED_VALUE_RE = re.compile(r"^\[(\d+)\]\s*(.*)$")
+
+
+def _parse_numbered_value_line(line: str) -> tuple[Optional[int], Optional[str]]:
+    """Parse a line of the form '[N]<value>' into (index, value).
+
+    Returns (None, None) if there is no '[N]' prefix. The value is returned
+    verbatim (still needs _normalize_value before comparison).
+    """
+    m = _NUMBERED_VALUE_RE.match(line.strip())
+    if not m:
+        return None, None
+    try:
+        idx = int(m.group(1))
+    except ValueError:
+        return None, None
+    return idx, m.group(2)
+
+
+def score_var_expand_numbered(
+    model_output: str,
+    expressions: list[dict],
+) -> list[tuple[bool, bool, bool]]:
+    """Score the numbered variable-expansion task ('[N]<word> <word>').
+
+    Each expected item is {"expr": "aaa+bbb", "answer": "big dog"}; the answer
+    is the two resolved words separated by a space. The `expressions` list is
+    canonical (1-indexed by position), so this works identically for
+    "streaming_var_expand" (input in order) and "shuffled_streaming_var_expand"
+    (input shuffled) — matching is by [N].
+
+    Returns one (copy_correct, answer_correct, self_consistent) per expected
+    item. Since the output carries no expression to echo, the three signals are
+    identical — copy_correct collapses onto answer_correct — but the 3-bool
+    shape is kept uniform with the other scorers. All-False for a missing [N].
+    """
+    by_number: dict[int, str] = {}
+    for line in model_output.split("\n"):
+        if not line.strip():
+            continue
+        idx, value = _parse_numbered_value_line(line)
+        if idx is None:
+            continue
+        if idx not in by_number:  # first occurrence wins on duplicates
+            by_number[idx] = value
+
+    scores: list[tuple[bool, bool, bool]] = []
+    for i, expected in enumerate(expressions):
+        value = by_number.get(i + 1)
+        if value is None:
+            scores.append((False, False, False))
+            continue
+        ok = _normalize_value(value) == _normalize_value(str(expected["answer"]))
+        scores.append((ok, ok, ok))
+    return scores
+
+
+def score_var_expand_unnumbered(
+    model_output: str,
+    expressions: list[dict],
+) -> list[tuple[bool, bool, bool]]:
+    """Score the unnumbered variable-expansion task by positional line matching.
+
+    Each non-empty model-output line is matched positionally to the expected
+    items. Returns one (copy_correct, answer_correct, self_consistent) per
+    expected item — the three signals are identical (see
+    score_var_expand_numbered). All-False for a missing line.
+    """
+    parsed = [l.strip() for l in model_output.split("\n") if l.strip()]
+    scores: list[tuple[bool, bool, bool]] = []
+    for i, expected in enumerate(expressions):
+        if i >= len(parsed):
+            scores.append((False, False, False))
+            continue
+        ok = _normalize_value(parsed[i]) == _normalize_value(str(expected["answer"]))
+        scores.append((ok, ok, ok))
     return scores
 
 

@@ -38,21 +38,25 @@ LOG = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Reasoning-tag assertion
+# Reasoning-tag warning
 # ---------------------------------------------------------------------------
-# Reasoning must be parsed/stripped by the inference server (e.g. via
-# vLLM's --reasoning-parser flag or an equivalent agent-side step) before the
-# response reaches the verifier. We assert that contract here instead of
-# silently rescuing malformed generations — a leaked <think>...</think>
-# preamble is a configuration bug, not something to paper over.
+# Reasoning should be stripped by the inference server (e.g. via vLLM's
+# --reasoning-parser flag) before reaching the verifier. When a model
+# generates think tags despite thinking being disabled, the pipeline's
+# non-greedy regex strips properly-paired blocks but can leave unpaired
+# </think> fragments behind. We warn and continue rather than crash — the
+# model's failure is reflected in its score (empty generation → reward=0.0,
+# or garbled text → low SEGALE score).
 
 
-def _assert_no_reasoning(text: str) -> None:
-    assert "<think>" not in text and "</think>" not in text, (
-        "longmt_eval received a generation containing <think>/</think> "
-        "reasoning tags. Reasoning must be parsed by the inference server "
-        "before reaching the verifier."
-    )
+def _warn_if_reasoning(text: str) -> None:
+    if "<think>" in text or "</think>" in text:
+        LOG.warning(
+            "longmt_eval received a generation containing <think>/</think> "
+            "reasoning tags. The model generated thinking tokens despite "
+            "thinking being disabled. generation[:200]=%r",
+            text[:200],
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -86,10 +90,6 @@ class LongmtEvalConfig(BaseResourcesServerConfig):
         embed_batch_size: Number of overlap strings per LASER2 encode_sentences()
             call inside each actor. Larger values improve GPU utilisation for
             long documents with many overlaps; 512 is a safe default.
-        assert_no_reasoning: When True, assert the incoming generation contains
-            no <think>...</think> tags. Reasoning is expected to be parsed by
-            the inference server upstream; an assertion failure here surfaces
-            misconfiguration instead of silently scoring a leaked preamble.
         use_extra_gpu: When False (default), SEGALE actors claim fractional
             num_gpus so Ray manages CUDA_VISIBLE_DEVICES. Use this when the gym
             runs its own Ray cluster with dedicated GPU nodes (HTTP-separated
@@ -105,7 +105,6 @@ class LongmtEvalConfig(BaseResourcesServerConfig):
     comet_num_shards: int = 4
     actors_per_gpu: int = 4
     embed_batch_size: int = 512
-    assert_no_reasoning: bool = True
     use_extra_gpu: bool = False
 
 
@@ -230,8 +229,7 @@ class LongmtEvalServer(SimpleResourcesServer):
             self._ensure_actors()
 
         raw = body.response.output_text or ""
-        if self.config.assert_no_reasoning:
-            _assert_no_reasoning(raw)
+        _warn_if_reasoning(raw)
         generation = raw.strip()
 
         base = dict(body.model_dump(), generation=generation)
