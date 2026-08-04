@@ -9,14 +9,35 @@ Five prompt variants per difficulty tier:
     - "streaming_sum"            : "[N]<expr>" in order
     - "shuffled_streaming_sum"   : "[N]<expr>" shuffled in input
 
-  Per-line UUID sort (2 variants per uuids_per_line × N_SAMPLES):
+  Per-line UUID sort (3 variants per uuids_per_line × N_SAMPLES):
     - "streaming_uuid_sort"          : "[N](u),(u),..." in order; model sorts
                                        UUIDs within each line by hex order.
     - "shuffled_streaming_uuid_sort" : same but line order is shuffled in input.
+    - "unnumbered_uuid_sort"         : no index prefix; positional matching.
+
+  Variable expansion (3 variants per n_variables × N_SAMPLES):
+    - "streaming_var_expand"          : "[N]key1+key2" in order; model resolves
+                                        each hex key against a shuffled pool of
+                                        "key=word" definitions and emits
+                                        "[N]word1 word2".
+    - "shuffled_streaming_var_expand" : same but expression lines are shuffled;
+                                        model must still emit ascending [N].
+    - "unnumbered_var_expand"         : no index prefix; positional matching.
+
+  CSV tasks (N_SAMPLES grids × difficulty levels):
+    - "csv_permutation_homogeneous"   : N×N grid of 4-digit integers; model
+                                        permutes rows and columns per spec.
+    - "csv_permutation_heterogeneous" : N×N grid of variable-length UUID
+                                        substrings (1–36 chars); same task.
+    - "csv_kv_lookup"                 : N×N grid of adjective+noun key
+                                        expressions (e.g. a3+v7); model
+                                        resolves each cell using provided
+                                        lookup tables.
 
 Each row carries a `type` field so the resource server selects the right
 parser. Sum variants share an `expressions` payload; uuid_sort variants share
-a `uuid_lines` payload.
+a `uuid_lines` payload; CSV variants share `expected_output`, `n_rows`,
+`n_cols`.
 
 Usage:
     python prepare.py
@@ -27,6 +48,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import subprocess
 from pathlib import Path
 
 BENCHMARK_DIR = Path(__file__).parent
@@ -290,6 +312,193 @@ New row order: {row_order}
 New col order: {col_order}"""
 
 
+PROMPT_CSV_KV_LOOKUP = """You will be given a lookup table for adjectives and nouns, followed by a CSV table.
+
+Each cell in the CSV contains an expression of the form aN+vM, where aN is an adjective key and vM is a noun key.
+Your task is to output the CSV with each expression replaced by the resolved adjective and noun, separated by a space.
+
+See the example below.
+
+```
+Adjectives:
+a0=quick
+a1=lazy
+
+Nouns:
+v0=fox
+v1=dog
+
+Input:
+
+,[C0],[C1]
+[R0],a1+v0,a0+v1
+[R1],a0+v0,a1+v1
+
+Output:
+
+,[C0],[C1]
+[R0],lazy fox,quick dog
+[R1],quick fox,lazy dog
+```
+
+The real lookup table and CSV will be much longer than the example.
+Do not think.
+Do not ask any questions.
+Do not stop until you output every line.
+Do not add whitespace.
+Do not change the format.
+
+Here is the real lookup table and CSV.
+
+Adjectives:
+{adjectives}
+
+Nouns:
+{nouns}
+
+Input:
+
+{input}"""
+
+
+PROMPT_UNNUMBERED_VAR_EXPAND = """You will be given a list of variable definitions, followed by a list of expressions.
+
+Each variable definition has the form key=word, where key is a short hex string (for example: a3f) and word is an English word. The definitions appear in random order.
+
+Each expression has the form key1+key2. Your task is to output, for each expression, the word for key1 and the word for key2, separated by a single space.
+
+See the example below.
+
+```
+Variables:
+
+a3f=big
+7b2=dog
+0c1=black
+9e4=cat
+
+Expressions:
+
+a3f+7b2
+0c1+9e4
+
+Output:
+
+big dog
+black cat
+```
+
+The real input will be much longer than the example.
+Do not think.
+Do not ask any questions.
+Do not stop until you output an answer to every expression.
+Do not add whitespace.
+Do not change the format.
+
+Here is the real input.
+
+Variables:
+
+{definitions}
+
+Expressions:
+
+{input}"""
+
+
+PROMPT_STREAMING_VAR_EXPAND = """You will be given a list of variable definitions, followed by a list of expressions.
+
+Each variable definition has the form key=word, where key is a short hex string (for example: a3f) and word is an English word. The definitions appear in random order.
+
+Each expression is preceded by a numeric index in brackets like [1], [2], [3], ... and has the form [N]key1+key2.
+Your task is to output, for each expression, its index followed by the word for key1 and the word for key2, separated by a single space, like [N]word1 word2.
+
+See the example below.
+
+```
+Variables:
+
+a3f=big
+7b2=dog
+0c1=black
+9e4=cat
+
+Expressions:
+
+[1]a3f+7b2
+[2]0c1+9e4
+
+Output:
+
+[1]big dog
+[2]black cat
+```
+
+The real input will be much longer than the example.
+Do not think.
+Do not ask any questions.
+Do not stop until you output an answer to every expression.
+Do not add whitespace.
+Do not change the format.
+
+Here is the real input.
+
+Variables:
+
+{definitions}
+
+Expressions:
+
+{input}"""
+
+
+PROMPT_SHUFFLED_STREAMING_VAR_EXPAND = """You will be given a list of variable definitions, followed by a list of expressions.
+
+Each variable definition has the form key=word, where key is a short hex string (for example: a3f) and word is an English word. The definitions appear in random order.
+
+Each expression is preceded by a numeric index in brackets like [1], [2], [3], ... and has the form [N]key1+key2.
+The input expressions are SHUFFLED — they appear in arbitrary order, not in numerical order.
+Your task is to output, for each expression, its index followed by the word for key1 and the word for key2, separated by a single space, like [N]word1 word2, IN ASCENDING ORDER OF INDEX, starting at [1].
+
+See the example below.
+
+```
+Variables:
+
+a3f=big
+7b2=dog
+0c1=black
+9e4=cat
+
+Expressions:
+
+[2]0c1+9e4
+[1]a3f+7b2
+
+Output:
+
+[1]big dog
+[2]black cat
+```
+
+The real input will be much longer than the example.
+Do not think.
+Do not ask any questions.
+Do not stop until you output an answer to every expression.
+Do not add whitespace.
+Do not change the format.
+
+Here is the real input.
+
+Variables:
+
+{definitions}
+
+Expressions:
+
+{input}"""
+
+
 PROMPT_TEMPLATES = {
     "streaming_sum":                PROMPT_STREAMING_SUM,
     "shuffled_streaming_sum":       PROMPT_SHUFFLED_STREAMING_SUM,
@@ -297,29 +506,56 @@ PROMPT_TEMPLATES = {
     "streaming_uuid_sort":          PROMPT_STREAMING_UUID_SORT,
     "shuffled_streaming_uuid_sort": PROMPT_SHUFFLED_STREAMING_UUID_SORT,
     "unnumbered_uuid_sort":         PROMPT_UNNUMBERED_UUID_SORT,
-    "csv_permutation":              PROMPT_CSV_PERMUTATION,
+    "csv_permutation_homogeneous":  PROMPT_CSV_PERMUTATION,
+    "csv_permutation_heterogeneous": PROMPT_CSV_PERMUTATION,
+    "csv_kv_lookup":                PROMPT_CSV_KV_LOOKUP,
+    "unnumbered_var_expand":        PROMPT_UNNUMBERED_VAR_EXPAND,
+    "streaming_var_expand":         PROMPT_STREAMING_VAR_EXPAND,
+    "shuffled_streaming_var_expand": PROMPT_SHUFFLED_STREAMING_VAR_EXPAND,
 }
 
 SUM_TYPES = ["unnumbered_streaming_sum",
              "streaming_sum", "shuffled_streaming_sum"]
 UUID_SORT_TYPES = ["unnumbered_uuid_sort",
                    "streaming_uuid_sort", "shuffled_streaming_uuid_sort"]
+VAR_EXPAND_TYPES = ["unnumbered_var_expand",
+                    "streaming_var_expand", "shuffled_streaming_var_expand"]
 NUMBERED_TYPES = {
     "streaming_sum",
     "shuffled_streaming_sum",
     "streaming_uuid_sort",
     "shuffled_streaming_uuid_sort",
+    "streaming_var_expand",
+    "shuffled_streaming_var_expand",
 }
 PERM_FRACTIONS = [0.2, 0.4, 0.8, 1.0]
+VOCAB_FRACTIONS = [1/8, 1/4, 1/2, 1.0]
 
 TARGET_TOKENS_LIST = [2048, 4096, 8192, 16384, 32768, 65536]
 N_SAMPLES = 5
 MAX_OPERANDS_RANGE = [2, 4, 8, 16]
+# Variable-expansion difficulty axis: size of the variable pool. All tiers fit
+# the smallest (2048-token) budget. Names are 3 hex digits (16**3 = 4096
+# possible), which comfortably covers the largest tier.
+N_VARIABLES_RANGE = [8, 32, 128, 256]
+VAR_HEX_DIGITS = 3
 
 
 def _get_encoder():
     import tiktoken
     return tiktoken.get_encoding("cl100k_base")
+
+
+def _rng(seed) -> random.Random:
+    """Return a seeded Random instance.
+
+    Python 3.12 only accepts None/int/float/str/bytes/bytearray as seeds;
+    tuple seeds that worked via implicit hash() in 3.9 now raise TypeError.
+    Converting to str() is deterministic and version-safe.
+    """
+    if not isinstance(seed, (type(None), int, float, str, bytes, bytearray)):
+        seed = str(seed)
+    return random.Random(seed)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -436,7 +672,7 @@ def _generate_uuid_lines(
     overhead = len(enc.encode(longest_header))
     budget = target_tokens - overhead
 
-    rng = random.Random(seed_key)
+    rng = _rng(seed_key)
     lines: list[list[str]] = []
     used_tokens = 0
     while True:
@@ -523,7 +759,17 @@ def _new_csv_cell(rng: random.Random) -> str:
     return uuid_str[: rng.randint(1, 36)]
 
 
-def _build_csv_input(grid: list[list[str]], row_order: list[int], col_order: list[int]) -> str:
+def _new_csv_cell_homogeneous(rng: random.Random) -> str:
+    """Random 4-digit integer string (1000–9999)."""
+    return str(rng.randint(1000, 9999))
+
+
+def _build_csv_input(
+    grid: list[list[str]],
+    row_order: list[int],
+    col_order: list[int],
+    sample_type: str = "csv_permutation_heterogeneous",
+) -> str:
     """Render the input CSV (original row/col order) with permutation spec and header."""
     N = len(grid)
     row_order_str = ",".join(f"[R{i}]" for i in row_order)
@@ -532,7 +778,7 @@ def _build_csv_input(grid: list[list[str]], row_order: list[int], col_order: lis
     rows = [f"[R{i}]," + ",".join(grid[i][j]
                                   for j in range(N)) for i in range(N)]
     csv_str = "\n".join([header] + rows)
-    return PROMPT_TEMPLATES["csv_permutation"].format(
+    return PROMPT_TEMPLATES[sample_type].format(
         row_order=row_order_str,
         col_order=col_order_str,
         input=csv_str,
@@ -547,16 +793,25 @@ def _build_csv_expected_output(grid: list[list[str]], row_order: list[int], col_
     return "\n".join([header] + rows)
 
 
-def _generate_csv_grid(enc, seed_key, target_tokens: int) -> tuple[list[list[str]], int]:
+def _generate_csv_grid(
+    enc,
+    seed_key,
+    target_tokens: int,
+    cell_fn=None,
+    sample_type: str = "csv_permutation_heterogeneous",
+) -> tuple[list[list[str]], int]:
     """Find the largest square N×N grid fitting target_tokens and return it with its token count.
 
     Uses a binary search: each probe regenerates the grid deterministically from seed_key
     with an identity permutation (same spec length for any permutation of the same N).
     """
+    if cell_fn is None:
+        cell_fn = _new_csv_cell
+
     def _probe(N: int) -> int:
-        rng = random.Random(seed_key)
-        grid = [[_new_csv_cell(rng) for _ in range(N)] for _ in range(N)]
-        prompt = _build_csv_input(grid, list(range(N)), list(range(N)))
+        rng = _rng(seed_key)
+        grid = [[cell_fn(rng) for _ in range(N)] for _ in range(N)]
+        prompt = _build_csv_input(grid, list(range(N)), list(range(N)), sample_type)
         return len(enc.encode(prompt))
 
     lo, hi = 2, 300
@@ -568,8 +823,8 @@ def _generate_csv_grid(enc, seed_key, target_tokens: int) -> tuple[list[list[str
             hi = mid - 1
 
     N = lo
-    rng = random.Random(seed_key)
-    grid = [[_new_csv_cell(rng) for _ in range(N)] for _ in range(N)]
+    rng = _rng(seed_key)
+    grid = [[cell_fn(rng) for _ in range(N)] for _ in range(N)]
     return grid, _probe(N)
 
 
@@ -593,14 +848,15 @@ def _build_csv_sample(
     perm_fraction: float,
     rng: random.Random,
     approx_prompt_tokens: int,
+    sample_type: str = "csv_permutation_heterogeneous",
 ) -> dict:
     N = len(grid)
     row_order = _apply_perm_fraction(N, perm_fraction, rng)
     col_order = _apply_perm_fraction(N, perm_fraction, rng)
-    prompt = _build_csv_input(grid, row_order, col_order)
+    prompt = _build_csv_input(grid, row_order, col_order, sample_type)
     expected_output = _build_csv_expected_output(grid, row_order, col_order)
     return {
-        "type": "csv_permutation",
+        "type": sample_type,
         "question": prompt,
         "expected_output": expected_output,
         "expressions": [
@@ -611,6 +867,264 @@ def _build_csv_sample(
         "n_rows": N,
         "n_cols": N,
         "perm_fraction": perm_fraction,
+        "approx_prompt_tokens": approx_prompt_tokens,
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CSV key-value lookup generation
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _install_wonderwords() -> None:
+    subprocess.run(["pip install wonderwords"], check=True, shell=True)
+
+
+def _load_word_lists() -> tuple[list[str], list[str]]:
+    import wonderwords.random_word as ww_rw
+    adjs = ww_rw._get_words_from_text_file("adjectivelist.txt")
+    nouns = ww_rw._get_words_from_text_file("nounlist.txt")
+    return adjs, nouns
+
+
+def _build_csv_kv_input(adjs: list[str], nouns: list[str], grid: list[list[str]]) -> str:
+    """Render the full prompt for csv_kv_lookup."""
+    M = len(grid)
+    adj_text = "\n".join(f"a{i}={adj}" for i, adj in enumerate(adjs))
+    noun_text = "\n".join(f"v{i}={noun}" for i, noun in enumerate(nouns))
+    header = "," + ",".join(f"[C{j}]" for j in range(M))
+    rows = [f"[R{i}]," + ",".join(grid[i][j] for j in range(M)) for i in range(M)]
+    csv_str = "\n".join([header] + rows)
+    return PROMPT_TEMPLATES["csv_kv_lookup"].format(
+        adjectives=adj_text,
+        nouns=noun_text,
+        input=csv_str,
+    )
+
+
+def _build_csv_kv_expected_output(adjs: list[str], nouns: list[str], grid: list[list[str]]) -> str:
+    """Resolve each expression cell to 'adjective noun'."""
+    M = len(grid)
+    header = "," + ",".join(f"[C{j}]" for j in range(M))
+    rows = []
+    for i in range(M):
+        cells = []
+        for j in range(M):
+            expr = grid[i][j]  # e.g. "a3+v7"
+            adj_idx = int(expr.split("+")[0][1:])
+            noun_idx = int(expr.split("+")[1][1:])
+            cells.append(f"{adjs[adj_idx]} {nouns[noun_idx]}")
+        rows.append(f"[R{i}]," + ",".join(cells))
+    return "\n".join([header] + rows)
+
+
+def _find_csv_kv_grid_size(
+    enc,
+    seed_key,
+    target_tokens: int,
+    all_adjs: list[str],
+    all_nouns: list[str],
+) -> tuple[int, list[str], list[str], int]:
+    """Binary-search for the largest M where the kv-lookup prompt fits target_tokens.
+
+    Uses vocab_fraction=1.0 (M adjectives and M nouns) for the upper-bound
+    token estimate. Returns (M, sampled_adjs, sampled_nouns, approx_tokens).
+    """
+    max_m = min(len(all_adjs), len(all_nouns), 300)
+
+    def _probe(M: int) -> int:
+        rng = _rng(seed_key)
+        adjs = rng.sample(all_adjs, M)
+        nouns = rng.sample(all_nouns, M)
+        # Sequential index grid gives a representative (slightly high) token
+        # count since large indices like "a99+v99" are longer than "a0+v0".
+        grid = [[f"a{i}+v{j}" for j in range(M)] for i in range(M)]
+        return len(enc.encode(_build_csv_kv_input(adjs, nouns, grid)))
+
+    lo, hi = 2, max_m
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if _probe(mid) <= target_tokens:
+            lo = mid
+        else:
+            hi = mid - 1
+
+    M = lo
+    rng = _rng(seed_key)
+    adjs = rng.sample(all_adjs, M)
+    nouns = rng.sample(all_nouns, M)
+    return M, adjs, nouns, _probe(M)
+
+
+def _build_csv_kv_sample(
+    M: int,
+    vocab_fraction: float,
+    adjs: list[str],
+    nouns: list[str],
+    rng: random.Random,
+    approx_prompt_tokens: int,
+) -> dict:
+    """Build one csv_kv_lookup sample.
+
+    `adjs` and `nouns` are the full M-length word lists for this grid.
+    `vocab_fraction` controls how many of those words are actually used:
+    n_vocab = max(2, round(M * vocab_fraction)).  Cells draw uniformly
+    from [0, n_vocab), so lower fractions produce more repetition.
+    """
+    n_vocab = max(2, int(round(M * vocab_fraction)))
+    active_adjs = adjs[:n_vocab]
+    active_nouns = nouns[:n_vocab]
+    grid = [
+        [f"a{rng.randint(0, n_vocab - 1)}+v{rng.randint(0, n_vocab - 1)}" for _ in range(M)]
+        for _ in range(M)
+    ]
+    prompt = _build_csv_kv_input(active_adjs, active_nouns, grid)
+    expected_output = _build_csv_kv_expected_output(active_adjs, active_nouns, grid)
+    expressions = []
+    for i in range(M):
+        for j in range(M):
+            expr = grid[i][j]
+            adj_idx = int(expr.split("+")[0][1:])
+            noun_idx = int(expr.split("+")[1][1:])
+            expressions.append({
+                "expr": expr,
+                "answer": f"{active_adjs[adj_idx]} {active_nouns[noun_idx]}",
+            })
+    return {
+        "type": "csv_kv_lookup",
+        "question": prompt,
+        "expected_output": expected_output,
+        "expressions": expressions,
+        "n_rows": M,
+        "n_cols": M,
+        "vocab_fraction": vocab_fraction,
+        "n_vocab": n_vocab,
+        "approx_prompt_tokens": approx_prompt_tokens,
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Variable-expansion generation
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _def_block(definitions: list[tuple[str, str]]) -> str:
+    """Render the variable-definition block ('key=word' per line, one order)."""
+    return "\n".join(f"{name}={word}" for name, word in definitions)
+
+
+def _build_var_pool(
+    n_variables: int,
+    all_adjs: list[str],
+    all_nouns: list[str],
+    rng: random.Random,
+) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[tuple[str, str]]]:
+    """Build a pool of n_variables hex-named variables split into adj/noun halves.
+
+    Returns (adjectives, nouns, definitions) where each is a list of
+    (hex_name, word) pairs. `definitions` is the SHUFFLED presentation order —
+    adjectives and nouns interleaved randomly — since the hex names are opaque,
+    this is what the model sees. Names are distinct 3-hex-digit strings.
+    """
+    n_adj = n_variables // 2
+    n_noun = n_variables - n_adj
+    max_names = 16 ** VAR_HEX_DIGITS
+    names = [f"{v:0{VAR_HEX_DIGITS}x}" for v in rng.sample(range(max_names), n_variables)]
+    adj_words = rng.sample(all_adjs, n_adj)
+    noun_words = rng.sample(all_nouns, n_noun)
+    adjectives = list(zip(names[:n_adj], adj_words))
+    nouns = list(zip(names[n_adj:], noun_words))
+    definitions = adjectives + nouns
+    rng.shuffle(definitions)
+    return adjectives, nouns, definitions
+
+
+def _generate_var_expressions(
+    adjectives: list[tuple[str, str]],
+    nouns: list[tuple[str, str]],
+    definitions: list[tuple[str, str]],
+    rng: random.Random,
+    enc,
+    target_tokens: int,
+) -> tuple[list[dict] | None, int]:
+    """Generate expressions that fill a target_tokens-budget prompt.
+
+    Each expression pairs a random adjective var with a random noun var (with
+    replacement). The definitions block is fixed overhead; the remaining budget
+    is filled with '[N]key1+key2' lines (numbered form is the longest variant,
+    so all three variants fit). Returns (expressions, approx_tokens), or
+    (None, overhead) when the definitions alone leave no room for expressions.
+    """
+    def_block = _def_block(definitions)
+    longest_prefix = max(
+        (PROMPT_TEMPLATES[t].split("{input}")[0].replace("{definitions}", def_block)
+         for t in VAR_EXPAND_TYPES),
+        key=len,
+    )
+    overhead = len(enc.encode(longest_prefix))
+    budget = target_tokens - overhead
+    if budget <= 0:
+        return None, overhead
+
+    expressions: list[dict] = []
+    used_tokens = 0
+    while True:
+        adj_name, adj_word = rng.choice(adjectives)
+        noun_name, noun_word = rng.choice(nouns)
+        expr = f"{adj_name}+{noun_name}"
+        answer = f"{adj_word} {noun_word}"
+        line_tokens = len(enc.encode(f"[{len(expressions) + 1}]{expr}\n"))
+        if used_tokens + line_tokens > budget:
+            break
+        expressions.append({"expr": expr, "answer": answer})
+        used_tokens += line_tokens
+    if not expressions:
+        return None, overhead
+    return expressions, overhead + used_tokens
+
+
+def _build_var_expand_sample(
+    definitions: list[tuple[str, str]],
+    expressions: list[dict],
+    n_variables: int,
+    sample_type: str,
+    approx_prompt_tokens: int,
+    rng: random.Random,
+) -> dict:
+    """Render one variable-expansion row.
+
+    `expressions` is canonical (1-indexed by position). For the shuffled
+    variant the INPUT line order is shuffled but the expected output is always
+    ascending [N]. The definition presentation order is fixed (already shuffled
+    in _build_var_pool) and identical across all three variants.
+    """
+    def_block = _def_block(definitions)
+    numbered = list(enumerate(expressions, start=1))
+
+    if sample_type == "unnumbered_var_expand":
+        input_text = "\n".join(e["expr"] for _, e in numbered)
+        expected_output = "\n".join(e["answer"] for _, e in numbered)
+    elif sample_type in {"streaming_var_expand", "shuffled_streaming_var_expand"}:
+        if sample_type == "shuffled_streaming_var_expand":
+            input_order = numbered.copy()
+            rng.shuffle(input_order)
+        else:
+            input_order = numbered
+        input_text = "\n".join(f"[{n}]{e['expr']}" for n, e in input_order)
+        expected_output = "\n".join(f"[{n}]{e['answer']}" for n, e in numbered)
+    else:
+        raise ValueError(f"unknown var_expand sample_type: {sample_type}")
+
+    prompt = (
+        PROMPT_TEMPLATES[sample_type]
+        .replace("{definitions}", def_block)
+        .replace("{input}", input_text)
+    )
+    return {
+        "type": sample_type,
+        "question": prompt,
+        "expected_output": expected_output,
+        "expressions": expressions,
+        "n_expressions": len(expressions),
+        "n_variables": n_variables,
         "approx_prompt_tokens": approx_prompt_tokens,
     }
 
@@ -630,6 +1144,10 @@ def generate(force: bool = False) -> None:
     enc = _get_encoder()
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Install and load word lists once (needed for csv_kv_lookup).
+    _install_wonderwords()
+    all_adjs, all_nouns = _load_word_lists()
+
     total = 0
     with OUTPUT_FPATH.open("w") as out:
         for target_tokens in TARGET_TOKENS_LIST:
@@ -643,7 +1161,7 @@ def generate(force: bool = False) -> None:
                     expressions, n_tokens = _generate_expressions(
                         max_operands, enc, target_tokens)
                     for sample_type in SUM_TYPES:
-                        rng = random.Random((target_tokens, max_operands, i, sample_type))
+                        rng = _rng((target_tokens, max_operands, i, sample_type))
                         sample = _build_sum_sample(
                             expressions, max_operands, sample_type, n_tokens, rng
                         )
@@ -656,9 +1174,7 @@ def generate(force: bool = False) -> None:
                         f"emitted {len(SUM_TYPES)} variants"
                     )
 
-            # UUID sort: 3 variants per (uuids_per_line, sample_idx). The same
-            # MAX_OPERANDS_RANGE knob is reused — for these types it is the exact
-            # count of UUIDs per line.
+            # UUID sort: 3 variants per (uuids_per_line, sample_idx).
             for uuids_per_line in MAX_OPERANDS_RANGE:
                 print(
                     f"Generating uuid_sort uuids_per_line={uuids_per_line} "
@@ -671,7 +1187,7 @@ def generate(force: bool = False) -> None:
                         target_tokens=target_tokens,
                     )
                     for sample_type in UUID_SORT_TYPES:
-                        rng = random.Random((target_tokens, uuids_per_line, i, sample_type))
+                        rng = _rng((target_tokens, uuids_per_line, i, sample_type))
                         sample = _build_uuid_sample(
                             uuid_lines, uuids_per_line, sample_type, n_tokens, rng
                         )
@@ -684,26 +1200,99 @@ def generate(force: bool = False) -> None:
                         f"~{n_tokens:,} tokens, emitted {len(UUID_SORT_TYPES)} variants"
                     )
 
-            # CSV permutation: N_SAMPLES grids × PERM_FRACTIONS difficulties.
-            # Each grid is shared across all perm_fractions for that sample index.
-            print(
-                f"Generating csv_permutation ({N_SAMPLES} grids × {len(PERM_FRACTIONS)} perm_fractions)...")
-            for i in range(N_SAMPLES):
-                grid, n_tokens = _generate_csv_grid(
-                    enc, seed_key=("csv", target_tokens, i), target_tokens=target_tokens
+            # CSV permutation: homogeneous and heterogeneous variants.
+            # Each variant uses N_SAMPLES grids × PERM_FRACTIONS difficulties.
+            for cell_type, cell_fn in [
+                ("homogeneous",   _new_csv_cell_homogeneous),
+                ("heterogeneous", _new_csv_cell),
+            ]:
+                type_name = f"csv_permutation_{cell_type}"
+                print(
+                    f"Generating {type_name} "
+                    f"({N_SAMPLES} grids × {len(PERM_FRACTIONS)} perm_fractions)..."
                 )
-                N = len(grid)
-                for perm_fraction in PERM_FRACTIONS:
-                    rng = random.Random(("csv", target_tokens, i, perm_fraction))
-                    sample = _build_csv_sample(grid, perm_fraction, rng, n_tokens)
+                for i in range(N_SAMPLES):
+                    grid, n_tokens = _generate_csv_grid(
+                        enc,
+                        seed_key=("csv", cell_type, target_tokens, i),
+                        target_tokens=target_tokens,
+                        cell_fn=cell_fn,
+                        sample_type=type_name,
+                    )
+                    N = len(grid)
+                    for perm_fraction in PERM_FRACTIONS:
+                        rng = _rng(("csv", cell_type, target_tokens, i, perm_fraction))
+                        sample = _build_csv_sample(grid, perm_fraction, rng, n_tokens, type_name)
+                        sample["target_tokens"] = target_tokens
+                        out.write(json.dumps(sample) + "\n")
+                        total += 1
+                    print(
+                        f"  {cell_type[:3]}[{i + 1:2d}/{N_SAMPLES}] "
+                        f"{N}×{N} grid, ~{n_tokens:,} tokens, "
+                        f"emitted {len(PERM_FRACTIONS)} perm_fraction variants"
+                    )
+
+            # CSV KV lookup: N_SAMPLES grids × VOCAB_FRACTIONS difficulties.
+            print(
+                f"Generating csv_kv_lookup "
+                f"({N_SAMPLES} grids × {len(VOCAB_FRACTIONS)} vocab_fractions)..."
+            )
+            for i in range(N_SAMPLES):
+                M, sample_adjs, sample_nouns, n_tokens = _find_csv_kv_grid_size(
+                    enc,
+                    seed_key=("csv_kv", target_tokens, i),
+                    target_tokens=target_tokens,
+                    all_adjs=all_adjs,
+                    all_nouns=all_nouns,
+                )
+                for vocab_fraction in VOCAB_FRACTIONS:
+                    rng = _rng(("csv_kv", target_tokens, i, vocab_fraction))
+                    sample = _build_csv_kv_sample(
+                        M, vocab_fraction, sample_adjs, sample_nouns, rng, n_tokens
+                    )
                     sample["target_tokens"] = target_tokens
                     out.write(json.dumps(sample) + "\n")
                     total += 1
                 print(
-                    f"  csv[{i + 1:2d}/{N_SAMPLES}] "
-                    f"{N}×{N} grid, ~{n_tokens:,} tokens, "
-                    f"emitted {len(PERM_FRACTIONS)} perm_fraction variants"
+                    f"  kv[{i + 1:2d}/{N_SAMPLES}] "
+                    f"{M}×{M} grid, ~{n_tokens:,} tokens, "
+                    f"emitted {len(VOCAB_FRACTIONS)} vocab_fraction variants"
                 )
+
+            # Variable expansion: 3 variants per (n_variables, sample_idx).
+            for n_variables in N_VARIABLES_RANGE:
+                print(
+                    f"Generating var_expand n_variables={n_variables} "
+                    f"({N_SAMPLES} samples)..."
+                )
+                for i in range(N_SAMPLES):
+                    pool_rng = _rng(("var", target_tokens, n_variables, i))
+                    adjectives, nouns, definitions = _build_var_pool(
+                        n_variables, all_adjs, all_nouns, pool_rng
+                    )
+                    expressions, n_tokens = _generate_var_expressions(
+                        adjectives, nouns, definitions, pool_rng, enc, target_tokens
+                    )
+                    if expressions is None:
+                        print(
+                            f"  var[{i + 1:2d}/{N_SAMPLES}] "
+                            f"{n_variables} vars don't fit ~{target_tokens:,} tokens, skipped"
+                        )
+                        continue
+                    for sample_type in VAR_EXPAND_TYPES:
+                        rng = _rng((target_tokens, n_variables, i, sample_type))
+                        sample = _build_var_expand_sample(
+                            definitions, expressions, n_variables,
+                            sample_type, n_tokens, rng
+                        )
+                        sample["target_tokens"] = target_tokens
+                        out.write(json.dumps(sample) + "\n")
+                        total += 1
+                    print(
+                        f"  var[{i + 1:2d}/{N_SAMPLES}] "
+                        f"{n_variables} vars, {len(expressions)} expressions, "
+                        f"~{n_tokens:,} tokens, emitted {len(VAR_EXPAND_TYPES)} variants"
+                    )
 
     print(f"Done. Wrote {total} examples to {OUTPUT_FPATH}")
 
