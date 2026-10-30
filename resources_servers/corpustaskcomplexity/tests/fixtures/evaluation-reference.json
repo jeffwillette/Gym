@@ -1,0 +1,4733 @@
+{
+  "source_revision": "69729fadd898e50e383e42803bb9a6250eb1dbbf",
+  "predictions": [
+    "",
+    "[]",
+    "[1]",
+    "[[1, 2]]",
+    "[[2, 1]]",
+    "[[1, 2, 3]]",
+    "Outliers: [1]",
+    "Ranking: [1], [2]",
+    "Answer: 1",
+    "[1, 2, 3, 4]",
+    "<think>reasoning</think>\n[[1, 2]]",
+    "[[\"bad\", null]]"
+  ],
+  "cases": [
+    {
+      "task": "ctc_fiqa",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_nq",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_hpqa",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_qdmatch_fiqa",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "9fc7ca15e7b12e1df2f79eef96c29a51bdd405606afd2c7371380d6085faec24",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_qdmatch_nq",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "9fc7ca15e7b12e1df2f79eef96c29a51bdd405606afd2c7371380d6085faec24",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_qdmatch_hpqa",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "9fc7ca15e7b12e1df2f79eef96c29a51bdd405606afd2c7371380d6085faec24",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_outlier_amzn",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "c73665fbf52bc4e5beec3caffcb4cc597e88d89e7677a6636dd818a31a8c3aff",
+        "budget": 256,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_outlier",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "c73665fbf52bc4e5beec3caffcb4cc597e88d89e7677a6636dd818a31a8c3aff",
+        "budget": 256,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_outlier_fixedm",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "c73665fbf52bc4e5beec3caffcb4cc597e88d89e7677a6636dd818a31a8c3aff",
+        "budget": 256,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_oolong",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "14038719484d9be4080298ba8170a7dc12209e3d31f03f1cd0f0cefc5c44d296",
+        "budget": 256,
+        "scores": [
+          {
+            "value": [
+              {
+                "score": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.75,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.5625,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.75,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.421875,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.75,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "score": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_grouping",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "a878a13339c577de78b25fd94baba21d7ae1bd66996aa02236bc8126c0a31bf8",
+        "budget": 4096,
+        "scores": [
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.0,
+                "pairwise_recall": 0.0,
+                "pairwise_f1": 0.0,
+                "k_exact": 0.0,
+                "coverage": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.0,
+                "pairwise_recall": 0.0,
+                "pairwise_f1": 0.0,
+                "k_exact": 0.0,
+                "coverage": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.0,
+                "pairwise_recall": 0.0,
+                "pairwise_f1": 0.0,
+                "k_exact": 0.0,
+                "coverage": 0.25,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 1.0,
+                "pairwise_recall": 0.5,
+                "pairwise_f1": 0.6666666666666666,
+                "k_exact": 0.0,
+                "coverage": 0.5,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 1.0,
+                "pairwise_recall": 0.5,
+                "pairwise_f1": 0.6666666666666666,
+                "k_exact": 0.0,
+                "coverage": 0.5,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.3333333333333333,
+                "pairwise_recall": 0.5,
+                "pairwise_f1": 0.4,
+                "k_exact": 0.0,
+                "coverage": 0.75,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.0,
+                "pairwise_recall": 0.0,
+                "pairwise_f1": 0.0,
+                "k_exact": 0.0,
+                "coverage": 0.25,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 1.0,
+                "pairwise_recall": 0.5,
+                "pairwise_f1": 0.6666666666666666,
+                "k_exact": 0.0,
+                "coverage": 0.5,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.0,
+                "pairwise_recall": 0.0,
+                "pairwise_f1": 0.0,
+                "k_exact": 0.0,
+                "coverage": 0.25,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.3333333333333333,
+                "pairwise_recall": 1.0,
+                "pairwise_f1": 0.5,
+                "k_exact": 0.0,
+                "coverage": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 1.0,
+                "pairwise_recall": 0.5,
+                "pairwise_f1": 0.6666666666666666,
+                "k_exact": 0.0,
+                "coverage": 0.5,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "pairwise_precision": 0.0,
+                "pairwise_recall": 0.0,
+                "pairwise_f1": 0.0,
+                "k_exact": 0.0,
+                "coverage": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_absence",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "88e73a654cd20998f4e14ef5b1dd8a04c5f459d2e05d21fb371e67f688e3448d",
+        "budget": 200,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.3333333333333333,
+                "recall": 1.0,
+                "f1": 0.5,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.25,
+                "recall": 1.0,
+                "f1": 0.4,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_xabsence",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "b4057461af33bd8d1ad9dcb01477aa0e231f91502fdb72ad048345820ef28cd2",
+        "budget": 200,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.3333333333333333,
+                "recall": 1.0,
+                "f1": 0.5,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.25,
+                "recall": 1.0,
+                "f1": 0.4,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.5,
+                "recall": 1.0,
+                "f1": 0.6666666666666666,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_rerank",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "82a136697504571a157cbda100dce48ac629a3a6f3dffc1315753db0ce0d714f",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.0,
+                "ce_ref_available": 1.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.0,
+                "ce_ref_available": 1.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 1.0,
+                "recall@10": 1.0,
+                "ce_pos_recall": 0.3333333333333333,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.3333333333333333,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 1.0,
+                "recall@10": 1.0,
+                "ce_pos_recall": 0.3333333333333333,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.3333333333333333,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 1.0,
+                "recall@10": 1.0,
+                "ce_pos_recall": 0.3333333333333333,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 1.0,
+                "recall@10": 1.0,
+                "ce_pos_recall": 0.6666666666666666,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.0,
+                "ce_ref_available": 1.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.0,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.3333333333333333,
+                "ce_ref_available": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "mrr@10": 0.0,
+                "recall@10": 0.0,
+                "ce_pos_recall": 0.0,
+                "ce_ref_available": 1.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_msmarco",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_reorder",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "64177b777f6063e7d896bb8254489f62e32aab35a285221f2df80b6582f8d2e4",
+        "budget": 2048,
+        "scores": [
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 1.0,
+                "pmr": 1.0,
+                "position_accuracy": 1.0,
+                "parsed": 1.0,
+                "spearman_rho": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "kendall_tau": 0.0,
+                "pmr": 0.0,
+                "position_accuracy": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_obliq",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_niah",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_contradiction",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "941cac25b7aeec0be537b0d61db5c8d67b1a297cc3376e1a86106b67ecd2a3a1",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_strmatch",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "531fe15867245c8112b64fd926f4b6ccf9a22a431d21364997d0e803aa5a4964",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_textgroups",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "1130c4e1174f60513f71b4ab5d273cb3905445c2409b11970286975d5ecf30b4",
+        "budget": 512,
+        "scores": [
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.5,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.8,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.8,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "exact_match": 1.0,
+                "claim_f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.5,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.8571428571428571,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.8,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "exact_match": 0.0,
+                "claim_f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task": "ctc_scifact",
+      "example": {
+        "documents": [
+          {
+            "text": "Example document 0.\n\nSecond paragraph.",
+            "title": "Title 0",
+            "type": "query",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 1.\n\nSecond paragraph.",
+            "title": "Title 1",
+            "type": "document",
+            "corpus": "A"
+          },
+          {
+            "text": "Example document 2.\n\nSecond paragraph.",
+            "title": "Title 2",
+            "type": "document",
+            "corpus": "B"
+          },
+          {
+            "text": "Example document 3.\n\nSecond paragraph.",
+            "title": "Title 3",
+            "type": "document",
+            "corpus": "B"
+          }
+        ],
+        "queries": [
+          "Find matching evidence."
+        ],
+        "answers": [
+          "1"
+        ],
+        "gold_doc_indices": [
+          0
+        ],
+        "gold_pairs": [
+          [
+            1,
+            2
+          ]
+        ],
+        "gold_order": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "ce_scores": [
+          3.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "_meta": {
+          "answer_type": "NUMERIC",
+          "gold_list": [
+            "1"
+          ]
+        }
+      },
+      "expected": {
+        "prompt_sha256": "2f5ae1753be2a761110002e9f12062d72effafaa3f98f41454ab85eaa7b097a4",
+        "budget": 64,
+        "scores": [
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 1.0,
+                "recall": 1.0,
+                "precision": 1.0,
+                "f1": 1.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 1.0,
+                "precision": 0.5,
+                "f1": 0.6666666666666666,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 1.0
+              },
+              true
+            ]
+          },
+          {
+            "value": [
+              {
+                "exact_match": 0.0,
+                "recall": 0.0,
+                "precision": 0.0,
+                "f1": 0.0,
+                "parsed": 0.0
+              },
+              false
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

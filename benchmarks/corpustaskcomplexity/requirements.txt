@@ -1,0 +1,4 @@
+# Preparation only; verifier dependencies remain lightweight.
+huggingface_hub
+pyarrow
+transformers
